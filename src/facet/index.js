@@ -1,5 +1,5 @@
 
-let Tab = require("../tab/interface");
+let Tab = require("../tab/index");
 
 let FacetRow = require("./row");
 let FacetTabUnitTests = require("./unit-tests");

@@ -1,7 +1,6 @@
 
 let { Issue } = require("niem-model-qa");
 let UnitTestsInterface = require("../qa/unit-tests");
-const { REF } = require("xlsx-populate/lib/FormulaError");
 
 class TabUnitTests extends UnitTestsInterface {
 

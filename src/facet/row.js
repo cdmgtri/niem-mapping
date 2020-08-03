@@ -1,7 +1,7 @@
 
-let RowInterface = require("../tab/row");
+let Row = require("../tab/row");
 
-class FacetRow extends RowInterface {
+class FacetRow extends Row {
 
   constructor() {
 

@@ -1,23 +1,19 @@
 
 let Tabs = require("./tabs");
 
-let Tabs2 = require("../tab/index");
-
 class Spreadsheet {
 
   constructor() {
 
     // this.info = new Tabs.InfoTab();
 
-    this.property = new Tabs2.PropertyTab(this);
-    this.type = new Tabs2.TypeTab(this);
-    this.facet = new Tabs2.FacetTab(this);
+    this.property = new Tabs.PropertyTab(this);
+    this.type = new Tabs.TypeTab(this);
+    this.facet = new Tabs.FacetTab(this);
 
     // this.subProperty = new Tabs.SubPropertyTab();
     // this.namespace = new Tabs.NamespaceTab();
     // this.localTerm = new Tabs.LocalTermTab();
-    // this.metadata = new Tabs.MetadataTab();
-    // this.union = new Tabs.TypeUnionTab();
   }
 
   get codes() {

@@ -1,7 +1,7 @@
 
 let SpreadsheetQA = require("../qa/index");
-let Tab = require("../tab/interface");
-let RowInterface = require("../tab/row");
+let Tab = require("../tab/index");
+let Row = require("../tab/row");
 
 class UnitTestsInterface {
 

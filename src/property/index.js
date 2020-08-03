@@ -1,5 +1,5 @@
 
-let Tab = require("../tab/interface");
+let Tab = require("../tab/index");
 
 let PropertyRow = require("./row");
 let PropertyTabUnitTests = require("./unit-tests");

@@ -1,5 +1,5 @@
 
-class RowInterface {
+class Row {
 
   constructor() {
 
@@ -24,4 +24,4 @@ class RowInterface {
 
 
 
-module.exports = RowInterface;
+module.exports = Row;

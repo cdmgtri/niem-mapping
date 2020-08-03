@@ -1,7 +1,7 @@
 
-let RowInterface = require("../tab/row");
+let Row = require("../tab/row");
 
-class PropertyRow extends RowInterface {
+class PropertyRow extends Row {
 
   constructor() {
 
