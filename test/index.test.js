@@ -46,7 +46,7 @@ describe("Invalid spreadsheet format", () => {
       spread = await init("test", "example-invalid-missingTabs");
     });
 
-    callTest(() => spread, "spreadsheet_tab_missing", 4);
+    callTest(() => spread, "spreadsheet_tab_missing", 5);
 
   })
 
@@ -72,7 +72,7 @@ describe("Invalid example", () => {
   describe("Spreadsheet checks", () => {
 
     callTest(() => spread, "spreadsheet_code_invalid", 7, "MAP");
-    callTest(() => spread, "spreadsheet_field_missing", 19);
+    callTest(() => spread, "spreadsheet_field_missing", 20);
     callTest(() => spread, "spreadsheet_field_name", 3, "ext:QualifiedNameType")
     callTest(() => spread, "spreadsheet_field_qname", 3, "TextType")
 
@@ -100,6 +100,12 @@ describe("Invalid example", () => {
   describe("Code tab checks", () => {
 
     callTest(() => spread, "facet_style_invalid", 3);
+
+  });
+
+  describe("Namespace tab checks", () => {
+
+    callTest(() => spread, "namespace_style_invalid", 1);
 
   });
 

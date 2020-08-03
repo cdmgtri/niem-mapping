@@ -4,6 +4,8 @@ let Tab = require("../tab/index");
 let FacetRow = require("./row");
 let FacetTabUnitTests = require("./unit-tests");
 
+let { Facet } = require("niem-model");
+
 /**
  * @extends Tab<FacetRow, FacetTabUnitTests>
  */
@@ -50,7 +52,7 @@ class FacetTab extends Tab {
       this.fields.targetName
     ];
 
-    this.styles = ["enumeration", "pattern", "minExclusive", "minInclusive", "maxExclusive", "maxInclusive", "length", "minLength", "maxLength", "fractionDigits", "totalDigits", "whitespace", ""];
+    this.styles = [...Facet.Styles, ""];
 
   }
 

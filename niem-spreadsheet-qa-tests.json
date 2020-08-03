@@ -181,5 +181,21 @@
     "exceptionLabels": [],
     "ran": "to do",
     "timeElapsedMilliseconds": 0
+  },
+  {
+    "id": "namespace_style_invalid",
+    "description": "A namespace must have a valid style.",
+    "category": "Invalid value",
+    "component": "Namespace",
+    "field": "Style",
+    "scope": "All",
+    "source": "spreadsheet",
+    "severity": "error",
+    "spec": "",
+    "version": "",
+    "rule": "",
+    "exceptionLabels": [],
+    "ran": false,
+    "timeElapsedMilliseconds": 0
   }
 ]

@@ -42,6 +42,11 @@ class NIEMSpreadsheet extends NIEMFormatInterface {
      */
     this.data;
 
+    /**
+     *
+     */
+    this.operations = [];
+
   }
 
   /**

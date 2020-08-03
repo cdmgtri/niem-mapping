@@ -4,6 +4,8 @@ let Tab = require("../tab/index");
 let TypeRow = require("./row");
 let TypeTabUnitTests = require("./unit-tests");
 
+let { Type } = require("niem-model");
+
 /**
  * @extends Tab<TypeRow, TypeTabUnitTests>
  */
@@ -50,7 +52,7 @@ class TypeTab extends Tab {
       this.fields.targetBase
     ]
 
-    this.styles = ["object", "adapter", "association", "augmentation", "metadata", "CSC", "simple", "list", "union", ""];
+    this.styles = [...Type.Styles, ""];
 
   }
 

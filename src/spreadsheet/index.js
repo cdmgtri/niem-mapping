@@ -11,8 +11,8 @@ class Spreadsheet {
     this.type = new Tabs.TypeTab(this);
     this.subProperty = new Tabs.SubPropertyTab(this);
     this.facet = new Tabs.FacetTab(this);
+    this.namespace = new Tabs.NamespaceTab(this);
 
-    // this.namespace = new Tabs.NamespaceTab();
     // this.localTerm = new Tabs.LocalTermTab();
   }
 
