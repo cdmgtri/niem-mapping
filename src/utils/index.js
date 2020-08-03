@@ -6,11 +6,6 @@ let { Workbook, Cell, Range, Row } = XLSX;
 
 class Utils {
 
-  static getRow(row) {
-    // Adjust row for 0-based index
-    return row["__rowNum__"] + 1;
-  }
-
   /**
    * Loads data from the NIEM mapping spreadsheet into an XLSX workbook
    *
@@ -25,22 +20,41 @@ class Utils {
 
     let workbook = await XLSX.fromDataAsync(buffer);
 
+    /** @type {Tab[]} */
+    let tabs = Object.values(spreadsheet);
+
     // Load spreadsheet rows for each expected tabs
-    Object.values(spreadsheet).forEach( tab => {
+    for (let tab of tabs) {
       tab.parse(workbook);
-    });
+    }
 
   }
 
-  static deepCopy(object) {
-    return JSON.parse(JSON.stringify(object));
+  /**
+   * @param {Cell} cell
+   */
+  static getCellValue(cell) {
+    let value = cell.value();
+    if (!value) return "";
+    return (typeof value == "string") ? value : value.text();
   }
+
+  /**
+   * @param {Workbook} workbook
+   * @param {string} cellName
+   */
+  static getColumnNumberFromCellName(workbook, cellName) {
+    /** @type {Cell} */
+    let cell = workbook.definedName(cellName);
+    if (!cell) return undefined;
+    return cell._columnNumber;
+}
 
 
 }
 
 let Spreadsheet = require("../spreadsheet/index");
-
+let Tab = require("../tab/index");
 
 module.exports = Utils;
 

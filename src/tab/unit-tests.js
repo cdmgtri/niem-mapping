@@ -57,7 +57,7 @@ class TabUnitTests extends UnitTestsInterface {
   code_invalid() {
 
     let test = this.qa.tests.start("spreadsheet_code_invalid");
-    let validCodes = this.spreadsheet.codes.valid;
+    let validCodes = this.tab.codes.valid;
 
     let problemRows = this.tab.rows.filter( row => ! validCodes.includes(row.code) );
 

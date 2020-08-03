@@ -16,28 +16,6 @@ class Spreadsheet {
     // this.localTerm = new Tabs.LocalTermTab();
   }
 
-  get codes() {
-    return {
-
-      value: {
-        add: "add",
-        edit: "edit",
-        delete: "delete",
-        comment: "comment",
-        no_change: "no change",
-        map: "map",
-        subset: "subset",
-        no_match: "no match",
-        documentation: "documentation",
-        clear: "clear"
-      },
-
-      valid: ["add", "edit", "delete", "comment", "no change", "map", "subset", "no match", "documentation", "clear"],
-
-      tracked: ["add", "edit", "delete", "map", "subset", "clear"],
-    }
-  }
-
 
 }
 

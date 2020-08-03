@@ -1,5 +1,6 @@
 
 let Row = require("./row");
+let Utils = require("../utils/index");
 
 /**
  * @template {Row} ROW
@@ -69,6 +70,28 @@ class Tab {
     return this.rows.length > 0;
   }
 
+  get codes() {
+    return {
+
+      value: {
+        add: "add",
+        edit: "edit",
+        delete: "delete",
+        comment: "comment",
+        no_change: "no change",
+        map: "map",
+        subset: "subset",
+        no_match: "no match",
+        documentation: "documentation",
+        clear: "clear"
+      },
+
+      valid: ["add", "edit", "delete", "comment", "no change", "map", "subset", "no match", "documentation", "clear"],
+
+      tracked: ["add", "edit", "delete", "map", "subset", "clear"],
+    }
+  }
+
   /**
    * Convert row object keys from spreadsheet column headers (user may have made changes) to known values
    * based on column header cell names.
@@ -92,7 +115,7 @@ class Tab {
 
     for (let newKey of newKeys) {
       // Look up the column number of the header cell name linked for each row key
-      colNumbers[newKey] = getColumnNumberFromCellName(workbook, this.cols[newKey]);
+      colNumbers[newKey] = Utils.getColumnNumberFromCellName(workbook, this.cols[newKey]);
 
       if (colNumbers[newKey] == undefined) {
         this.missingColumnCellNames.push(newKey);
@@ -106,7 +129,7 @@ class Tab {
       Object.keys(tabRow).forEach( key => {
         let colNum = colNumbers[key];
         let cell = sheet.row(rangeRow).cell(colNum);
-        tabRow[key] = getCellValue(cell);
+        tabRow[key] = Utils.getCellValue(cell);
       });
 
       tabRow.rowNum = rangeRow;
@@ -120,34 +143,17 @@ class Tab {
   }
 
   get rowsTracked() {
-    let trackedCodes = this.spreadsheet.codes.tracked;
-    return this.rows.filter( row => trackedCodes.includes(row.code));
+    return this.rows.filter( row => this.codes.tracked.includes(row.code));
   }
 
 }
 
-/**
- * @param {Cell} cell
- */
-function getCellValue(cell) {
-  let value = cell.value();
-  if (!value) return "";
-  return (typeof value == "string") ? value : value.text();
-}
-
-/**
- * @param {Workbook} workbook
- * @param {string} cellName
- */
-function getColumnNumberFromCellName(workbook, cellName) {
-  /** @type {Cell} */
-  let cell = workbook.definedName(cellName);
-  if (!cell) return undefined;
-  return cell._columnNumber;
-}
-
-const Cell = require("xlsx-populate/lib/Cell");
 const Workbook = require("xlsx-populate/lib/Workbook");
 const Spreadsheet = require("../spreadsheet/index");
+
+/**
+ * @type {"add"|"edit"|"delete"|"map"|"subset"|"clear"}
+ */
+Tab.TrackedCodes;
 
 module.exports = Tab;
