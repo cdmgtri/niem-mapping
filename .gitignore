@@ -2,6 +2,7 @@ usmtf/
 bash.exe.stackdump
 test/example*.json
 test/report*
+test/example*-qa.xlsx
 
 # Logs
 logs

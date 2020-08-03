@@ -5,6 +5,8 @@ let Spreadsheet = require("../spreadsheet/index");
 let TabTester = require("../tab/tester");
 
 let PropertyTabUnitTests = require("../property/unit-tests");
+let TypeTabUnitTests = require("../type/unit-tests");
+let FacetTabUnitTests = require("../facet/unit-tests");
 
 class NIEMSpreadsheetQA extends NIEMModelQA {
 
@@ -20,11 +22,17 @@ class NIEMSpreadsheetQA extends NIEMModelQA {
     /** @type {TabTester<PropertyTabUnitTests>} */
     let propertyTab = new TabTester(this, new PropertyTabUnitTests(this));
 
+    /** @type {TabTester<TypeTabUnitTests>} */
+    let typeTab = new TabTester(this, new TypeTabUnitTests(this));
+
+    /** @type {TabTester<FacetTabUnitTests>} */
+    let facetTab = new TabTester(this, new FacetTabUnitTests(this));
+
     this.objects = {
-      propertyTab
-
+      propertyTab,
+      typeTab,
+      facetTab
     };
-
 
   }
 
@@ -47,11 +55,11 @@ class NIEMSpreadsheetQA extends NIEMModelQA {
 
     // Run tests
     await this.objects.propertyTab.run();
+    await this.objects.typeTab.run();
+    await this.objects.facetTab.run();
 
   }
 
 }
-
-const { Workbook } = require("xlsx-populate");
 
 module.exports = NIEMSpreadsheetQA;

@@ -5,6 +5,11 @@ let path = require("path");
 let NIEMSpreadsheet = require("../src/index");
 let SpreadsheetQA = require("../src/qa/index");
 
+/**
+ * See the test report spreadsheets for specific errors and their locations.
+ */
+
+
 beforeAll( async () => {
   // Make sure the JSON test data has been updated with the latest from the spreadsheet test data
   await SpreadsheetQA.saveTestsAsJSON("niem-spreadsheet-qa-tests.xlsx");
@@ -17,7 +22,7 @@ let spread;
 describe("Valid example", () => {
 
   test("qa", async () => {
-    let spread = await init("iepd-requirements", "iepd-requirements-example");
+    let spread = await init("test", "example-valid");
 
     let issues = spread.qa.results.issues();
     let passed = spread.qa.results.passed();
@@ -38,21 +43,20 @@ describe("Invalid spreadsheet format", () => {
   describe("Missing tabs", () => {
 
     beforeAll( async () => {
-      spread = await init("iepd-requirements", "iepd-requirements-example-invalid-missingTabs");
+      spread = await init("test", "example-invalid-missingTabs");
     });
 
-    callTest(() => spread, "spreadsheet_tab_missing", 2);
+    callTest(() => spread, "spreadsheet_tab_missing", 3);
 
   })
 
   describe("Missing columns", () => {
 
     beforeAll( async () => {
-      spread = await init("iepd-requirements", "iepd-requirements-example-invalid-missingCols");
+      spread = await init("test", "example-invalid-missingCols");
     });
 
-    // Four missing columns or deleted column cell names in tab Property; two in tab Type
-    callTest(() => spread, "spreadsheet_column_missing", 6);
+    callTest(() => spread, "spreadsheet_column_missing", 9);
 
   });
 
@@ -62,40 +66,33 @@ describe("Invalid spreadsheet format", () => {
 describe("Invalid example", () => {
 
   beforeAll( async () => {
-    spread = await init("iepd-requirements", "iepd-requirements-example-invalid");
+    spread = await init("test", "example-invalid-data");
   });
 
   describe("Spreadsheet checks", () => {
 
-    // Property tab: 2 blank mapping codes, "MAP" (upper case of a valid code), and "use" (unknown)
-    // Type tab: 3 invalid mapping codes ("x", "y", "z")
     callTest(() => spread, "spreadsheet_code_invalid", 7, "MAP");
-
-    // Empty rows at the end of Property with codes add, edit, delete, map, subset, and clear
-    // Empty rows in Type with codes add and edit
     callTest(() => spread, "spreadsheet_field_missing", 19);
-
-    // Property tab, Property Name column: "nc:OrganizationTaxIdentification", "ext:MusicGroupGenreText"
-    // Type tab, Type Name column: "nc:PersonType"
     callTest(() => spread, "spreadsheet_field_name", 3, "ext:QualifiedNameType")
-
-    // Property tab, Qualified Data Type column: "IdentificationType", "TextType"
-    // Type tab, Qualified Parent / Base Type column: "ObjectType"
     callTest(() => spread, "spreadsheet_field_qname", 3, "TextType")
 
   })
 
   describe("Property tab checks", () => {
 
-    // Style column: "elt" (twice) and "none"
     callTest(() => spread, "property_style_invalid", 3);
 
   });
 
   describe("Type tab checks", () => {
 
-    // Style column: "none", "AUG"
     callTest(() => spread, "type_style_invalid", 2);
+
+  });
+
+  describe("Code tab checks", () => {
+
+    callTest(() => spread, "facet_style_invalid", 3);
 
   });
 
@@ -132,12 +129,12 @@ function callTest(getNIEMSpreadsheet, testID, expectedCount, expectedProblemValu
 }
 
 
-async function init(exampleFolder, fileName) {
-  let filePath = path.resolve("examples", exampleFolder, fileName + ".xlsx");
+async function init(folder, fileName) {
+  let filePath = path.resolve(folder, fileName + ".xlsx");
   let buffer = fs.readFileSync(filePath);
   let spread = new NIEMSpreadsheet(buffer);
   await spread.import();
-  await spread.qa.report.saveAsFile("test/report-" + fileName, [], [], {sourceFormat: "spreadsheet"});
+  await spread.qa.report.saveAsFile("test/" + fileName + "-qa", [], [], {sourceFormat: "spreadsheet"});
   return spread;
 }
 
