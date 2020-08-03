@@ -1,114 +1,88 @@
 
-let XLSX = require("xlsx");
+let { NIEM, Release, Type, Facet, Namespace, Interfaces } = require("niem-model");
 
-let NIEM = require("niem");
-let QA = require("niem-qa");
+let NIEMSpreadsheetQA = require("./qa/index");
 
-let runSpreadsheetQA = require("./qa/index");
+let FormatQA = require("./qa/index");
+let Utils = require("./utils/index");
+let Spreadsheet = require("./spreadsheet/index");
 
-// XLSX values
-let BLANK = "";
-let ROW_NUM = "__rowNum__";
+let { NIEMFormatInterface } = Interfaces.FormatInterface;
 
-let { Release, Type, Facet, Namespace } = NIEM.ModelObjects;
-let { checkRelease, Test, Issue } = QA;
-let { Tabs, TabType } = require("./spreadsheet/index");
-
-/** @type {Test[]} */
-let testSuite = require("../tests.json");
-
-
-
-class NIEMMapping {
+class NIEMSpreadsheet extends NIEMFormatInterface {
 
   /**
    * @param {Buffer} buffer - NIEM mapping spreadsheet loaded into buffer
+   * @param {NIEM} niem
    */
-  constructor(buffer) {
+  constructor(buffer, niem) {
 
-    this.niem = new NIEM();
+    super();
 
-    /** @type {Tabs} */
-    this.tabs = JSON.parse(JSON.stringify(Tabs));
+    /**
+     * A NIEM XLSX file read into a buffer
+     */
+    this.buffer = buffer;
 
-    /** @type {Test[]} */
-    this.tests = JSON.parse(JSON.stringify(testSuite));
+    /**
+     * A set of existing NIEM data or a newly initialized NIEM data source
+     */
+    this.niem = niem || new NIEM();
 
-    this.validFormat = false;
-    this.loaded = false;
+    /**
+     * The tabs, columns, rows, and cells of a NIEM spreadsheet
+     */
+    this.spreadsheet = new Spreadsheet();
 
-    /** @type {Release} */
+    this.qa = new NIEMSpreadsheetQA(this.spreadsheet);
+
+    /**
+     * Spreadsheet data loaded into a NIEM release object.
+     * @type {Release}
+     */
     this.data;
 
-    this.loadSpreadsheet(buffer);
-
   }
-
 
   /**
-   * Loads data from the NIEM mapping spreadsheet
+   * Parse, load, and test the data.
    *
-   * @param {Buffer} spreadsheetBuffer - NIEM mapping spreadsheet read into buffer
+   * @param {boolean} [quitOnFormatErrors=false] True to skip model QA and import if formatting errors found
+   *
+   * @throws Spreadsheet format invalid
+   * @throws Modeling
    */
-  loadSpreadsheet(spreadsheetBuffer) {
+  async import(quitOnFormatErrors=false) {
 
-    let workbook = XLSX.read(spreadsheetBuffer, {type: "array"});
+    // Parse the file buffer into the NIEM spreadsheet object
+    await Utils.parseSpreadsheet(this.buffer, this.spreadsheet);
 
-    let tabTest = Test.run(this.tests, "spread-format-tabs");
-    let colTest = Test.run(this.tests, "spread-format-columns");
+    // Load spreadsheet format tests
+    await this.qa.init();
 
-    // For each expected tab...
-    for (let [tabName, tab] of Object.entries(this.tabs)) {
+    // await this.qa.tests.loadSpreadsheet("niem-xlsx-qa-tests.xlsx");
+    await this.qa.run();
+    // FormatQA.checkFormat(this, this.qa._tests, );
 
-      // Load the tab from the workbook
-      let sheet = workbook.Sheets[tab.name];
-      tab.rows = XLSX.utils.sheet_to_json(sheet, {defval: BLANK});
+    return;
 
-      // Log an issue if the tab is required but does not exist in the workbook
-      if (tab.required && !sheet) {
-        let issue = new Issue("Spreadsheet", tab.name, "", "", "", tab.name, "Missing tab");
-        tabTest.issues.push(issue);
-      }
+    // this.status.validFormat = this.qa.testSuite.passed();
 
-      // Check tab for required columns
-      if (tab.rows.length > 0) {
-        let row = tab.rows[0];
-        for (let key in tab.cols) {
-          let colName = tab.cols[key];
-          if (! row.hasOwnProperty(colName)) {
-            let issue = new Issue("Spreadsheet", tab.name, "", colName, "", "", "Missing column");
-            colTest.issues.push(issue);
-          }
-        }
-      }
-    }
+    // Optional break on errors
+    if (quitOnFormatErrors && !this.status.validFormat) return;
 
-    if (this.issueCount == 0) {
-      this.validFormat = true;
-      runSpreadsheetQA(this.tests, this.tabs);
-    }
+    // Load the spreadsheet object into a NIEM release object
+    await this.loadData();
 
+    // Run modeling tests from niem-model-qa
+    let update = this.status.startUpdate("Modeling checks",
+      "Check model-based NDR rules and NIEM best practices (partially implemented).");
+    this.qa.testSuite.loadModelTests();
+    await this.qa.checkRelease(this.data);
+    update.done();
+
+    return this.data;
   }
-
-  get failedTests() {
-    return this.tests.filter( test => test.issues.length > 0 );
-  }
-
-  get failedTestCount() {
-    return this.failedTests.length;
-  }
-
-  get issues() {
-    /** @type {Issue[]} */
-    let issues = [];
-    this.failedTests.forEach( test => issues.push(...test.issues) );
-    return issues;
-  }
-
-  get issueCount() {
-    return this.issues.length;
-  }
-
 
   /**
    * @todo Add other tab data
@@ -120,134 +94,60 @@ class NIEMMapping {
    */
   async loadData(userName="user", modelName="model", releaseName="release") {
 
-    this.data = await this.niem.releases.sandbox(userName, modelName, releaseName);
+    this.data = await this.niem.releases.add(userName, modelName, releaseName);
 
-    let typeCols = this.tabs.Type.cols;
+    let typeCols = this.spreadsheet.type.cols;
 
-    for (let row of this.tabs.Type.rows) {
+    for (let row of this.spreadsheet.type.rows) {
       if (row[typeCols.Code] == "add") {
-        let type = new Type(null,
+        let type = await this.data.types.add(
           row[typeCols.TargetPrefix],
           row[typeCols.TargetName],
           row[typeCols.TargetDefinition],
           row[typeCols.TargetStyle] || "object",
           row[typeCols.TargetBase]
         );
-        type.source = getSource(this.tabs.Type, row);
-        await this.data.types.add(type);
+        type.input_location = this.spreadsheet.type.name;
+        type.input_line = Utils.getRow(row);
       }
     }
 
 
-    let facetCols = this.tabs.Facet.cols;
+    let facetCols = this.spreadsheet.facet.cols;
 
-    for (let row of this.tabs.Facet.rows) {
+    for (let row of this.spreadsheet.facet.rows) {
       if (row[facetCols.Code] == "add") {
-        let facet = new Facet(null,
+        let facet = await this.data.facets.add(
           row[facetCols.TargetPrefix] + ":" + row[facetCols.TargetName],
           row[facetCols.TargetValue],
           row[facetCols.TargetDefinition],
           row[facetCols.TargetKind] || "enumeration"
         );
-        facet.source = getSource(this.tabs.Facet, row);
-        await this.data.facets.add(facet);
+        facet.input_location = this.spreadsheet.facet.name;
+        facet.input_line = Utils.getRow(row);
       }
     }
 
 
-    let nsCols = this.tabs.Namespace.cols;
+    let nsCols = this.spreadsheet.namespace.cols;
 
-    for (let row of this.tabs.Namespace.rows) {
+    for (let row of this.spreadsheet.namespace.rows) {
       if (row[nsCols.Code] == "add") {
-        let ns = new Namespace(null,
+        let ns = await this.data.namespaces.add(
           row[nsCols.TargetPrefix],
+          row[nsCols.TargetStyle],
           row[nsCols.TargetURI],
           row[nsCols.TargetFileName],
           row[nsCols.TargetDefinition],
           row[nsCols.TargetDraftVersion],
-          row[nsCols.TargetStyle]
         );
-        ns.source = getSource(this.tabs.Namespace, row);
-        await this.data.namespaces.add(ns);
+        ns.input_location = this.spreadsheet.namespace.name;
+        ns.input_line = Utils.getRow(row);
       }
     }
 
-    await checkRelease(this.tests, this.data);
-
-  }
-
-  runQA() {
-    //
-  }
-
-  generateWantlist() {
-    // TODO
-  }
-
-  generateModel() {
-    // TODO
-  }
-
-  generateXSDs() {
-    // TODO
   }
 
 }
 
-/**
- * Runs QA on a CR spreadsheet.
- *
- * @param {Buffer} data - CR spreadsheet loaded into buffer
- */
-function ChangeRequestQA(data, label="niem-mapping-qa") {
-
-  loadWorksheets(data);
-
-  if (issues.length > 0) {
-    // Do not continue: missing required tabs or columns
-    return results;
-  }
-
-  loadComponents();
-  checkTypes();
-  checkFacets();
-  saveIssues(label);
-
-  return results;
-}
-
-
-function saveIssues(fileName) {
-  let workbook = XLSX.utils.book_new();
-  let header = ["Tab", "Row", "Col", "Label", "Category", "Description"];
-  let sheet = XLSX.utils.json_to_sheet(issues, {header});
-
-  // TODO: Figure out how to enable worksheet filter
-  // sheet["!protect"].autoFilter = true;
-
-  XLSX.utils.book_append_sheet(workbook, sheet, "Issues");
-  XLSX.writeFile(workbook, fileName + "-QA.xlsx");
-}
-
-/**
- * Gets the row number and adjusts for the zero-based index.
- * @param {Object} row
- * @returns Number
- */
-function getRow(row) {
-  return row[ROW_NUM] + 1;
-}
-
-/**
- * @param {TabType} tab
- * @param {Object} row
- */
-function getSource(tab, row) {
-  return {
-    location: tab.name,
-    line: getRow(row),
-    position: ""
-  };
-}
-
-module.exports = NIEMMapping;
+module.exports = NIEMSpreadsheet;
