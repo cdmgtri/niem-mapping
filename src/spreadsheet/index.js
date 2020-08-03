@@ -9,9 +9,9 @@ class Spreadsheet {
 
     this.property = new Tabs.PropertyTab(this);
     this.type = new Tabs.TypeTab(this);
+    this.subProperty = new Tabs.SubPropertyTab(this);
     this.facet = new Tabs.FacetTab(this);
 
-    // this.subProperty = new Tabs.SubPropertyTab();
     // this.namespace = new Tabs.NamespaceTab();
     // this.localTerm = new Tabs.LocalTermTab();
   }

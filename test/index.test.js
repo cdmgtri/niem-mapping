@@ -46,7 +46,7 @@ describe("Invalid spreadsheet format", () => {
       spread = await init("test", "example-invalid-missingTabs");
     });
 
-    callTest(() => spread, "spreadsheet_tab_missing", 3);
+    callTest(() => spread, "spreadsheet_tab_missing", 4);
 
   })
 
@@ -87,6 +87,13 @@ describe("Invalid example", () => {
   describe("Type tab checks", () => {
 
     callTest(() => spread, "type_style_invalid", 2);
+
+  });
+
+  describe("SubProperty tab checks", () => {
+
+    callTest(() => spread, "subProperty_min_invalid", 3);
+    callTest(() => spread, "subProperty_max_invalid", 3);
 
   });
 

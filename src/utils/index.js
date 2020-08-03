@@ -35,8 +35,9 @@ class Utils {
    */
   static getCellValue(cell) {
     let value = cell.value();
-    if (!value) return "";
-    return (typeof value == "string") ? value : value.text();
+    if (value == null) return "";
+    let valueType = typeof value;
+    return (valueType == "string" || valueType == "number") ? value : value.text();
   }
 
   /**

@@ -1,8 +1,8 @@
 
-# NIEM Mapping
+# NIEM Spreadsheet
 
-[![Build Status](https://travis-ci.org/cdmgtri/niem-mapping.svg?branch=dev)](https://travis-ci.org/cdmgtri/niem-mapping)
-[![Coverage Status](https://coveralls.io/repos/github/cdmgtri/niem-mapping/badge.svg?branch=dev)](https://coveralls.io/github/cdmgtri/niem-mapping?branch=dev)
+[![Build Status](https://travis-ci.org/cdmgtri/niem-model-format-spreadsheet.svg?branch=dev)](https://travis-ci.org/cdmgtri/niem-model-format-spreadsheet)
+[![Coverage Status](https://coveralls.io/repos/github/cdmgtri/niem-model-format-spreadsheet/badge.svg?branch=dev)](https://coveralls.io/github/cdmgtri/niem-model-format-spreadsheet?branch=dev)
 
 This project provides support for spreadsheets following the NIEM Mapping template.
 
@@ -49,28 +49,31 @@ npm i cdmgtri/niem-mapping
 
 ## To Do
 
-- [ ] Refactor `tests.xlsx`
-  - [ ] Spreadsheet-specific tests should stay here
-  - [ ] Model tests should move to niem-qa
-- [ ] Info tab
-  - [ ] Review the MPD catalog for additional fields
-  - [ ] Add tests
-- [ ] Review code
-- [ ] Save and format results
-- [ ] Add usage info to this README
+- [ ] Finish refactoring tabs
+- [ ] Load rows into NIEM objects
+- [ ] Run model QA on NIEM objects
+- [ ] Add ref-exists tests (do refs exist in the spreadsheet or release?)
+- [ ] Add duplication tests (are items added twice in spreadsheet or already exist in release?)
+- [ ] Add tests for Info tab
+- [ ] NIEM QA checks
+  - [ ] property is abstract or has type
+  - [ ] element has complex type
+  - [ ] rep term vs data type
+  - [ ] definition opening phrases
+  - [ ] facet numeric styles have numeric values
+  - [ ] facet tokens do not have two or more spaces
+  - [ ] facets do not begin or end with a space
+  - [ ] facets are not empty
 
-## Implemented Tabs
+## Progress
 
-- [ ] Info
-- [ ] Property
-- [ ] Type
-  - [x] Simple (adds only)
-  - [x] CSC (adds only)
-  - [ ] CCC
-  - [ ] Simple list
-  - [ ] Simple union
-- [ ] Type contains property
-- [x] Facet (adds only)
-- [ ] Namespace
-- [ ] Local Terms
-- [ ] Union
+"..." => *In progress*
+
+Tab | Add | Edit | Delete | Map | Subset | Clear
+--- | --- | ---- | ------ | --- | ------ | -----
+Property | ... |
+Type | ... |
+Has-A | ... |
+Codes | ... |
+Namespace |
+Local Terms |

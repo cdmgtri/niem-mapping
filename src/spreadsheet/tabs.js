@@ -128,10 +128,10 @@ module.exports = {
   Tab: require("../tab/index"),
   PropertyTab: require("../property/index"),
   TypeTab: require("../type/index"),
+  SubPropertyTab: require("../subProperty/index"),
   FacetTab: require("../facet/index"),
 
   InfoTab,
-  SubPropertyTab,
   NamespaceTab,
   LocalTermTab,
 }
