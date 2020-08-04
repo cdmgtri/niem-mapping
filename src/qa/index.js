@@ -9,6 +9,7 @@ let TypeTabUnitTests = require("../type/unit-tests");
 let FacetTabUnitTests = require("../facet/unit-tests");
 let SubPropertyUnitTests = require("../subProperty/unit-tests");
 let NamespaceUnitTests = require("../namespace/unit-tests");
+let LocalTermUnitTests = require("../localTerm/unit-tests");
 
 class NIEMSpreadsheetQA extends NIEMModelQA {
 
@@ -36,12 +37,18 @@ class NIEMSpreadsheetQA extends NIEMModelQA {
     /** @type {TabTester<NamespaceUnitTests>} */
     let namespaceTab = new TabTester(this, new NamespaceUnitTests(this));
 
+    /**
+     * @type {TabTester<LocalTermUnitTests>}
+     */
+    let localTermTab = new TabTester(this, new LocalTermUnitTests(this));
+
     this.objects = {
       propertyTab,
       typeTab,
       subPropertyTab,
       facetTab,
-      namespaceTab
+      namespaceTab,
+      localTermTab
     };
 
   }
@@ -69,6 +76,7 @@ class NIEMSpreadsheetQA extends NIEMModelQA {
     await this.objects.subPropertyTab.run();
     await this.objects.facetTab.run();
     await this.objects.namespaceTab.run();
+    await this.objects.localTermTab.run();
 
   }
 

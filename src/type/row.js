@@ -110,19 +110,19 @@ class TypeRow extends Row {
     let row = new TypeRow();
 
     row.sourcePrefix = "sourcePrefix";
-    row.sourceName = "sourceName"
-    row.sourceBase = "sourceBase"
-    row.sourceDefinition = "sourceDefinition"
+    row.sourceName = "sourceName";
+    row.sourceBase = "sourceBase";
+    row.sourceDefinition = "sourceDefinition";
 
-    row.code = "code"
-    row.description = "description"
-    row.notes = "notes"
+    row.code = "code";
+    row.description = "description";
+    row.notes = "notes";
 
-    row.targetPrefix = "targetPrefix"
-    row.targetName = "targetName"
-    row.targetBase = "targetBase"
-    row.targetDefinition = "targetDefinition"
-    row.targetStyle = "targetStyle"
+    row.targetPrefix = "targetPrefix";
+    row.targetName = "targetName";
+    row.targetBase = "targetBase";
+    row.targetDefinition = "targetDefinition";
+    row.targetStyle = "targetStyle";
 
     return row;
 

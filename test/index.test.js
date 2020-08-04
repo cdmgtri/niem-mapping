@@ -46,7 +46,7 @@ describe("Invalid spreadsheet format", () => {
       spread = await init("test", "example-invalid-missingTabs");
     });
 
-    callTest(() => spread, "spreadsheet_tab_missing", 5);
+    callTest(() => spread, "spreadsheet_tab_missing", 6);
 
   })
 
@@ -106,6 +106,10 @@ describe("Invalid example", () => {
   describe("Namespace tab checks", () => {
 
     callTest(() => spread, "namespace_style_invalid", 1);
+
+  });
+
+  describe("Local term checks", () => {
 
   });
 
