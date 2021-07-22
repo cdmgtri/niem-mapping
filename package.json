@@ -15,7 +15,7 @@
     "file-saver": "^2.0.2",
     "niem-model": "github:cdmgtri/niem-model#dev",
     "niem-model-qa": "github:cdmgtri/niem-model-qa#dev",
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.1",
