@@ -3,25 +3,32 @@
   "version": "1.0.0",
   "description": "Support for NIEM mapping, change request, and documentation spreadsheets.",
   "main": "src/index.js",
+  "bin": {
+    "niem-spread": "./src/cli.js"
+  },
   "scripts": {
+    "build": "npm i -g",
     "test": "npm run test:json && jest",
-    "convert:tests": "node scripts/convertTests.js"
+    "convert:tests": "node scripts/convertTests.js",
+    "warnings": "node --trace-warnings ./src/cli.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "file-saver": "^2.0.2",
+    "chalk": "^4.1.2",
+    "commander": "^8.1.0",
+    "file-saver": "^2.0.5",
     "niem-model": "github:cdmgtri/niem-model#dev",
     "niem-model-qa": "github:cdmgtri/niem-model-qa#dev",
     "xlsx-populate": "^1.21.0"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.1",
-    "@types/jest": "^25.2.3",
+    "@types/file-saver": "^2.0.3",
+    "@types/jest": "^26.0.24",
     "@types/xlsx-populate": "github:JanLoebel/types-xlsx-populate",
-    "coveralls": "^3.1.0",
-    "jest": "^25.5.4",
+    "coveralls": "^3.1.1",
+    "jest": "^27.0.6",
     "jsdoc-typeof-plugin": "^1.0.0"
   }
 }
