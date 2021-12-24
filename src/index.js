@@ -1,8 +1,8 @@
 
 let XLSX = require("xlsx");
 
-let NIEM = require("niem");
-let QA = require("niem-qa");
+let NIEM = require("niem-model");
+let QA = require("niem-model-qa");
 
 let runSpreadsheetQA = require("./qa/index");
 

@@ -1,7 +1,7 @@
 
 let fs = require("fs");
 let path = require("path");
-let { Test } = require("niem-qa");
+let { Test } = require("niem-model-qa");
 
 let NIEMMapping = require("../src/index");
 
