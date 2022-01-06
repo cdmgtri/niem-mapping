@@ -1,5 +1,5 @@
 
-let { NIEM, Release, Type, Facet, Namespace, Interfaces } = require("niem-model");
+let { NIEM, NIEMDef, Release, ReleaseDef, Type, Facet, Namespace, NIEMObjectFormatInterface } = require("niem-model");
 
 let NIEMSpreadsheetQA = require("./qa/index");
 
@@ -7,13 +7,11 @@ let FormatQA = require("./qa/index");
 let Utils = require("./utils/index");
 let Spreadsheet = require("./spreadsheet/index");
 
-let { NIEMFormatInterface } = Interfaces.FormatInterface;
-
-class NIEMSpreadsheet extends NIEMFormatInterface {
+class NIEMSpreadsheet extends NIEMObjectFormatInterface {
 
   /**
    * @param {Buffer} buffer - NIEM mapping spreadsheet loaded into buffer
-   * @param {NIEM} niem
+   * @param {NIEMDef} niem
    */
   constructor(buffer, niem) {
 
@@ -38,7 +36,7 @@ class NIEMSpreadsheet extends NIEMFormatInterface {
 
     /**
      * Spreadsheet data loaded into a NIEM release object.
-     * @type {Release}
+     * @type {ReleaseDef}
      */
     this.data;
 
@@ -104,16 +102,16 @@ class NIEMSpreadsheet extends NIEMFormatInterface {
     let typeCols = this.spreadsheet.type.cols;
 
     for (let row of this.spreadsheet.type.rows) {
-      if (row[typeCols.Code] == "add") {
+      if (row[typeCols.code] == "add") {
         let type = await this.data.types.add(
-          row[typeCols.TargetPrefix],
-          row[typeCols.TargetName],
-          row[typeCols.TargetDefinition],
-          row[typeCols.TargetStyle] || "object",
-          row[typeCols.TargetBase]
+          row[typeCols.targetPrefix],
+          row[typeCols.targetName],
+          row[typeCols.targetDefinition],
+          row[typeCols.targetStyle] || "object",
+          row[typeCols.targetBase]
         );
         type.input_location = this.spreadsheet.type.name;
-        type.input_line = Utils.getRow(row);
+        type.input_line = row.rowNum + "";
       }
     }
 
@@ -121,15 +119,15 @@ class NIEMSpreadsheet extends NIEMFormatInterface {
     let facetCols = this.spreadsheet.facet.cols;
 
     for (let row of this.spreadsheet.facet.rows) {
-      if (row[facetCols.Code] == "add") {
+      if (row[facetCols.code] == "add") {
         let facet = await this.data.facets.add(
-          row[facetCols.TargetPrefix] + ":" + row[facetCols.TargetName],
-          row[facetCols.TargetValue],
-          row[facetCols.TargetDefinition],
-          row[facetCols.TargetKind] || "enumeration"
+          row[facetCols.targetPrefix] + ":" + row[facetCols.targetName],
+          row[facetCols.targetValue],
+          row[facetCols.targetDefinition],
+          row[facetCols.targetStyle] || "enumeration"
         );
         facet.input_location = this.spreadsheet.facet.name;
-        facet.input_line = Utils.getRow(row);
+        facet.input_line = row.rowNum + "";
       }
     }
 
@@ -137,17 +135,17 @@ class NIEMSpreadsheet extends NIEMFormatInterface {
     let nsCols = this.spreadsheet.namespace.cols;
 
     for (let row of this.spreadsheet.namespace.rows) {
-      if (row[nsCols.Code] == "add") {
+      if (row[nsCols.code] == "add") {
         let ns = await this.data.namespaces.add(
-          row[nsCols.TargetPrefix],
-          row[nsCols.TargetStyle],
-          row[nsCols.TargetURI],
-          row[nsCols.TargetFileName],
-          row[nsCols.TargetDefinition],
-          row[nsCols.TargetDraftVersion],
+          row[nsCols.targetPrefix],
+          row[nsCols.targetStyle],
+          row[nsCols.targetURI],
+          row[nsCols.targetFileName],
+          row[nsCols.targetDefinition],
+          row[nsCols.targetDraft]
         );
         ns.input_location = this.spreadsheet.namespace.name;
-        ns.input_line = Utils.getRow(row);
+        ns.input_line = row.rowNum + "";
       }
     }
 

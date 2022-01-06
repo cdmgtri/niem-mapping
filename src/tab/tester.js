@@ -1,6 +1,8 @@
 
-let { NIEMModelQA, NIEMObjectTester, Test } = require('niem-model-qa');
+let { NIEMModelQA, NIEMObjectTester, QATypeDefs } = require('niem-model-qa');
 let TabUnitTests = require("./unit-tests");
+
+let { NIEMModelQADef, TestDef } = QATypeDefs;
 
 /**
  * @template {TabUnitTests} TAB_UNIT_TESTS
@@ -8,7 +10,7 @@ let TabUnitTests = require("./unit-tests");
 class TabTester extends NIEMObjectTester {
 
   /**
-   * @param {NIEMModelQA} qa
+   * @param {NIEMModelQADef} qa
    * @param {TAB_UNIT_TESTS} tabUnitTests
    */
   constructor(qa, tabUnitTests) {
@@ -30,7 +32,7 @@ class TabTester extends NIEMObjectTester {
    */
   async runTests() {
 
-    /** @type {Test[]} */
+    /** @type {TestDef[]} */
     let tests = [];
 
     // Get function names from the Tester class to be run as tests
@@ -49,7 +51,7 @@ class TabTester extends NIEMObjectTester {
     // debug(`Ran ${label} tests`);
 
     // Close out the progress tracker update
-    let passed = tests.filter(test => test.passed.length);
+    let passed = tests.filter(test => test.passed);
     update.end(passed);
 
   }

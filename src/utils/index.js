@@ -3,6 +3,8 @@ let XLSX = require("xlsx-populate");
 
 let { Workbook, Cell, Range, Row } = XLSX;
 
+let CellDef = new Cell();
+let WorkbookDef = new Workbook();
 
 class Utils {
 
@@ -31,7 +33,7 @@ class Utils {
   }
 
   /**
-   * @param {Cell} cell
+   * @param {CellDef} cell
    */
   static getCellValue(cell) {
     let value = cell.value();
@@ -41,14 +43,14 @@ class Utils {
   }
 
   /**
-   * @param {Workbook} workbook
+   * @param {WorkbookDef} workbook
    * @param {string} cellName
    */
   static getColumnNumberFromCellName(workbook, cellName) {
-    /** @type {Cell} */
+    /** @type {CellDef} */
     let cell = workbook.definedName(cellName);
     if (!cell) return undefined;
-    return cell._columnNumber;
+    return cell.columnNumber;
 }
 
 
